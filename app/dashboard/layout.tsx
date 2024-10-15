@@ -1,5 +1,6 @@
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
+import { routes } from '../routes'
 
 export default async function AuthLayout({
   children,
@@ -13,7 +14,7 @@ export default async function AuthLayout({
   } = await supabase.auth.getUser()
 
   if (!user) {
-    return redirect('/sign-in')
+    return redirect(routes.signIn)
   }
 
   return <section>{children}</section>

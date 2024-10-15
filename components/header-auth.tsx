@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Button } from './ui/button'
 import { createClient } from '@/utils/supabase/server'
 import { ThemeSwitcher } from './theme-switcher'
+import { routes } from '../app/routes'
 
 export default async function AuthButton() {
   const {
@@ -23,7 +24,7 @@ export default async function AuthButton() {
       ) : (
         <div className="flex gap-2">
           <Button asChild size="sm" variant={'outline'}>
-            <Link href="/sign-in">Sign in</Link>
+            <Link href={routes.signIn}>Sign in</Link>
           </Button>
           <Button asChild size="sm" variant={'default'}>
             <Link href="/sign-up">Sign up</Link>

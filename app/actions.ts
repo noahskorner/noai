@@ -26,11 +26,11 @@ export const signUpAction = async (formData: FormData) => {
 
   if (error) {
     console.error(error.code + ' ' + error.message)
-    return encodedRedirect('error', '/sign-up', error.message)
+    return encodedRedirect('error', routes.signUp, error.message)
   } else {
     return encodedRedirect(
       'success',
-      '/sign-up',
+      routes.signUp,
       'Thanks for signing up! Please check your email for a verification link.'
     )
   }
@@ -47,7 +47,7 @@ export const signInAction = async (formData: FormData) => {
   })
 
   if (error) {
-    return encodedRedirect('error', '/sign-in', error.message)
+    return encodedRedirect('error', routes.signIn, error.message)
   }
 
   return redirect(routes.createAgent)
@@ -60,7 +60,7 @@ export const forgotPasswordAction = async (formData: FormData) => {
   const callbackUrl = formData.get('callbackUrl')?.toString()
 
   if (!email) {
-    return encodedRedirect('error', '/forgot-password', 'Email is required')
+    return encodedRedirect('error', routes.forgotPassword, 'Email is required')
   }
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -71,7 +71,7 @@ export const forgotPasswordAction = async (formData: FormData) => {
     console.error(error.message)
     return encodedRedirect(
       'error',
-      '/forgot-password',
+      routes.forgotPassword,
       'Could not reset password'
     )
   }
@@ -82,7 +82,7 @@ export const forgotPasswordAction = async (formData: FormData) => {
 
   return encodedRedirect(
     'success',
-    '/forgot-password',
+    routes.forgotPassword,
     'Check your email for a link to reset your password.'
   )
 }
@@ -96,7 +96,7 @@ export const resetPasswordAction = async (formData: FormData) => {
   if (!password || !confirmPassword) {
     encodedRedirect(
       'error',
-      '/protected/reset-password',
+      routes.resetPassword,
       'Password and confirm password are required'
     )
   }
@@ -104,7 +104,7 @@ export const resetPasswordAction = async (formData: FormData) => {
   if (password !== confirmPassword) {
     encodedRedirect(
       'error',
-      '/protected/reset-password',
+      routes.resetPassword,
       'Passwords do not match'
     )
   }
@@ -116,16 +116,16 @@ export const resetPasswordAction = async (formData: FormData) => {
   if (error) {
     encodedRedirect(
       'error',
-      '/protected/reset-password',
+      routes.resetPassword,
       'Password update failed'
     )
   }
 
-  encodedRedirect('success', '/protected/reset-password', 'Password updated')
+  encodedRedirect('success', routes.resetPassword, 'Password updated')
 }
 
 export const signOutAction = async () => {
   const supabase = createClient()
   await supabase.auth.signOut()
-  return redirect('/sign-in')
+  return redirect(routes.signIn)
 }
