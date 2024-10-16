@@ -1,169 +1,176 @@
-'use client'
+"use client";
 
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Button } from '@/components/ui/button'
-import React, { useRef, useState } from 'react'
-import ollama, { ChatRequest, ChatResponse, Message } from 'ollama/browser'
-import type { A as AbortableAsyncIterator } from 'ollama/dist/shared/ollama.51f6cea9'
-import { Switch } from '@/components/ui/switch'
-import Markdown from 'react-markdown'
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import React, { useRef, useState } from "react";
+import ollama, { ChatRequest, ChatResponse, Message } from "ollama/browser";
+import type { A as AbortableAsyncIterator } from "ollama/dist/shared/ollama.51f6cea9";
+import { Switch } from "@/components/ui/switch";
+import Markdown from "react-markdown";
+import { ModelSelect } from "./model-select";
 
-const SYSTEM_PROMPT_PLACEHOLDER = `You are a helpful assistant knowledgeable about technology and programming. Your goal is to provide clear, concise, and accurate answers to users' questions while encouraging a positive and engaging interaction. Always ask follow-up questions to ensure the user's needs are met.`
-const USER_PROMPT_PLACEHOLDER = `Can you explain the difference between a framework and a library in software development?`
+const SYSTEM_PROMPT_PLACEHOLDER = `You are a helpful assistant knowledgeable about technology and programming. Your goal is to provide clear, concise, and accurate answers to users' questions while encouraging a positive and engaging interaction. Always ask follow-up questions to ensure the user's needs are met.`;
+const USER_PROMPT_PLACEHOLDER = `Can you explain the difference between a framework and a library in software development?`;
 
 export default function CreateAgentPage() {
+  const [model, setModel] = useState<string>("llama3.2");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [modelLoading, setModelLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
-      role: 'system',
-      content: '',
+      role: "system",
+      content: "",
     },
-  ])
+  ]);
   const [currentMessage, setCurrentMessage] = useState<Message>({
-    role: 'user',
-    content: '',
-  })
-  const [loading, setLoading] = useState(false)
-  const streamRef = useRef<AbortableAsyncIterator<ChatResponse> | null>(null)
-  const [markdown, setMarkdown] = useState(false)
+    role: "user",
+    content: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const streamRef = useRef<AbortableAsyncIterator<ChatResponse> | null>(null);
+  const [markdown, setMarkdown] = useState(false);
 
   const onSystemPromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessages((prev) => {
       return [
         {
-          role: 'system',
+          role: "system",
           content: e.target.value,
         },
         ...(prev.slice(1) ?? []),
-      ]
-    })
-  }
+      ];
+    });
+  };
 
   const onCurrentRoleChange = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
+    e.preventDefault();
 
     setCurrentMessage(
       (prev) =>
         ({
-          role: prev.role === 'user' ? 'assistant' : 'user',
+          role: prev.role === "user" ? "assistant" : "user",
           content: prev.content,
-        }) satisfies Message
-    )
-  }
+        }) satisfies Message,
+    );
+  };
 
   const onCurrentMessageChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     setCurrentMessage((prev) => ({
       role: prev.role,
       content: e.target.value,
-    }))
-  }
+    }));
+  };
 
   const onAddClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
+    e.preventDefault();
     setMessages((prev) => {
-      return [...prev, currentMessage]
-    })
+      return [...prev, currentMessage];
+    });
     setCurrentMessage({
-      role: 'user',
-      content: '',
-    })
-  }
+      role: "user",
+      content: "",
+    });
+  };
 
   const onMessageSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    setLoading(true)
+    setLoading(true);
     try {
       // Add the current message to the request
       const request =
-        currentMessage.content !== ''
+        currentMessage.content !== ""
           ? [...messages, currentMessage]
-          : [...messages]
+          : [...messages];
 
       // Reset the current message
       setCurrentMessage({
-        role: 'user',
-        content: '',
-      })
+        role: "user",
+        content: "",
+      });
 
       // Send the request to ollama
       streamRef.current = await ollama.chat({
-        model: 'llama3.2',
+        model: model,
         stream: true,
         messages: request,
-      } satisfies ChatRequest & { stream: true })
+      } satisfies ChatRequest & { stream: true });
 
-      let i = 0
+      let i = 0;
       for await (const response of streamRef.current) {
         // Create a new message with the response
         if (i === 0) {
           setMessages([
             ...request,
             {
-              role: 'assistant',
+              role: "assistant",
               content: response.message.content,
             },
-          ])
+          ]);
 
           // Update the last message
         } else {
           setMessages((prev) => {
-            const lastMessage = [...prev].pop()
+            const lastMessage = [...prev].pop();
             return [
               ...prev.slice(0, -1),
               {
-                role: 'assistant',
+                role: "assistant",
                 content: `${lastMessage?.content}${response.message.content}`,
               },
-            ]
-          })
+            ];
+          });
         }
-        i++
+        i++;
       }
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const onMessageChange =
     (index: number) => (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       setMessages((prev) => {
-        const messages = [...prev]
+        const messages = [...prev];
         messages[index + 1] = {
           role: messages[index + 1].role,
           content: e.target.value,
-        }
-        return messages
-      })
-    }
+        };
+        return messages;
+      });
+    };
 
   const onDeleteMessageClick =
     (index: number) => (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.preventDefault()
+      e.preventDefault();
       setMessages((prev) => {
-        return prev.slice(0, index + 1)
-      })
-    }
+        return prev.slice(0, index + 1);
+      });
+    };
 
   const onCancelClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (streamRef.current != null) {
       try {
-        streamRef.current.abort()
+        streamRef.current.abort();
       } catch {}
     }
-  }
+  };
 
   const onMarkdownToggled = (checked: boolean) => {
-    setMarkdown(checked)
-  }
+    setMarkdown(checked);
+  };
 
   return (
     <div className="w-full h-[calc(100vh-7rem)] relative gap-4 flex flex-col">
-      <div className="w-full flex justify-end">
+      <div className="w-full flex justify-end gap-4">
+        <div>
+          <ModelSelect setModel={setModel} setModelLoading={setModelLoading} />
+        </div>
         <div className="flex items-center space-x-2">
           <Switch checked={markdown} onCheckedChange={onMarkdownToggled} />
           <Label>Markdown</Label>
@@ -220,7 +227,7 @@ export default function CreateAgentPage() {
                   </div>
                 </div>
               </div>
-            )
+            );
           })}
         </div>
         <div className="absolute bottom-0 left-0 right-0">
@@ -274,5 +281,5 @@ export default function CreateAgentPage() {
         </div>
       </form>
     </div>
-  )
+  );
 }

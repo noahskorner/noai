@@ -1,5 +1,5 @@
 version: '3.8'
-name: educationdotnew
+name: ollama
 networks:
   net:
     driver: bridge
@@ -13,3 +13,12 @@ services:
       - OLLAMA_ORIGINS=*
     networks:
       - net
+    volumes:
+      - ./models:/root/.ollama/models
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
