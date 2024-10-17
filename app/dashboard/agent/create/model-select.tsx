@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Select,
@@ -6,17 +6,20 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { MODELS } from "./models";
-import ollama, { PullRequest } from "ollama/browser";
-import { useEffect, useState } from "react";
+} from '@/components/ui/select';
+import { MODELS } from './models';
+import { PullRequest } from 'ollama/browser';
+import { useEffect, useState } from 'react';
+import { ollama } from './ollama';
 
 export interface ModelSelectProps {
+  model: string | null;
   setModel: (model: string) => void;
   setModelLoading: (loading: boolean) => void;
 }
 
 export const ModelSelect = ({
+  model: currentModel,
   setModel,
   setModelLoading,
 }: ModelSelectProps) => {
@@ -30,6 +33,15 @@ export const ModelSelect = ({
     setModelLoading(true);
 
     try {
+      // Unload the current model
+      if (currentModel != null) {
+        await ollama.generate({
+          model: currentModel,
+          keep_alive: 0,
+          prompt: '',
+        });
+      }
+
       const responses = await ollama.pull({
         model: model,
         stream: true,
@@ -72,7 +84,7 @@ export const ModelSelect = ({
             return (
               <SelectItem key={model} value={model}>
                 {model}&nbsp;
-                {downloaded.includes(`${model}:latest`) && "✅"}
+                {downloaded.includes(`${model}:latest`) && '✅'}
                 {progress && progress.model === model && (
                   <>({progress.completed.toFixed(2)}%)</>
                 )}

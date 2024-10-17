@@ -1,31 +1,32 @@
-"use client";
+'use client';
 
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import React, { useRef, useState } from "react";
-import ollama, { ChatRequest, ChatResponse, Message } from "ollama/browser";
-import type { A as AbortableAsyncIterator } from "ollama/dist/shared/ollama.51f6cea9";
-import { Switch } from "@/components/ui/switch";
-import Markdown from "react-markdown";
-import { ModelSelect } from "./model-select";
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import React, { useRef, useState } from 'react';
+import { ChatRequest, ChatResponse, Message } from 'ollama/browser';
+import type { A as AbortableAsyncIterator } from 'ollama/dist/shared/ollama.51f6cea9';
+import { Switch } from '@/components/ui/switch';
+import Markdown from 'react-markdown';
+import { ModelSelect } from './model-select';
+import { MODELS } from './models';
+import { ollama } from './ollama';
 
 const SYSTEM_PROMPT_PLACEHOLDER = `You are a helpful assistant knowledgeable about technology and programming. Your goal is to provide clear, concise, and accurate answers to users' questions while encouraging a positive and engaging interaction. Always ask follow-up questions to ensure the user's needs are met.`;
 const USER_PROMPT_PLACEHOLDER = `Can you explain the difference between a framework and a library in software development?`;
 
 export default function CreateAgentPage() {
-  const [model, setModel] = useState<string>("llama3.2");
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [model, setModel] = useState<string>(MODELS[0]);
   const [modelLoading, setModelLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
-      role: "system",
-      content: "",
+      role: 'system',
+      content: '',
     },
   ]);
   const [currentMessage, setCurrentMessage] = useState<Message>({
-    role: "user",
-    content: "",
+    role: 'user',
+    content: '',
   });
   const [loading, setLoading] = useState(false);
   const streamRef = useRef<AbortableAsyncIterator<ChatResponse> | null>(null);
@@ -35,7 +36,7 @@ export default function CreateAgentPage() {
     setMessages((prev) => {
       return [
         {
-          role: "system",
+          role: 'system',
           content: e.target.value,
         },
         ...(prev.slice(1) ?? []),
@@ -49,14 +50,14 @@ export default function CreateAgentPage() {
     setCurrentMessage(
       (prev) =>
         ({
-          role: prev.role === "user" ? "assistant" : "user",
+          role: prev.role === 'user' ? 'assistant' : 'user',
           content: prev.content,
-        }) satisfies Message,
+        }) satisfies Message
     );
   };
 
   const onCurrentMessageChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     setCurrentMessage((prev) => ({
       role: prev.role,
@@ -70,8 +71,8 @@ export default function CreateAgentPage() {
       return [...prev, currentMessage];
     });
     setCurrentMessage({
-      role: "user",
-      content: "",
+      role: 'user',
+      content: '',
     });
   };
 
@@ -82,14 +83,14 @@ export default function CreateAgentPage() {
     try {
       // Add the current message to the request
       const request =
-        currentMessage.content !== ""
+        currentMessage.content !== ''
           ? [...messages, currentMessage]
           : [...messages];
 
       // Reset the current message
       setCurrentMessage({
-        role: "user",
-        content: "",
+        role: 'user',
+        content: '',
       });
 
       // Send the request to ollama
@@ -106,7 +107,7 @@ export default function CreateAgentPage() {
           setMessages([
             ...request,
             {
-              role: "assistant",
+              role: 'assistant',
               content: response.message.content,
             },
           ]);
@@ -118,7 +119,7 @@ export default function CreateAgentPage() {
             return [
               ...prev.slice(0, -1),
               {
-                role: "assistant",
+                role: 'assistant',
                 content: `${lastMessage?.content}${response.message.content}`,
               },
             ];
@@ -169,7 +170,11 @@ export default function CreateAgentPage() {
     <div className="w-full h-[calc(100vh-7rem)] relative gap-4 flex flex-col">
       <div className="w-full flex justify-end gap-4">
         <div>
-          <ModelSelect setModel={setModel} setModelLoading={setModelLoading} />
+          <ModelSelect
+            model={model}
+            setModel={setModel}
+            setModelLoading={setModelLoading}
+          />
         </div>
         <div className="flex items-center space-x-2">
           <Switch checked={markdown} onCheckedChange={onMarkdownToggled} />
@@ -272,7 +277,9 @@ export default function CreateAgentPage() {
                     <Button variant="secondary" onClick={onAddClick}>
                       Add
                     </Button>
-                    <Button type="submit">Run</Button>
+                    <Button disabled={modelLoading || loading} type="submit">
+                      Run
+                    </Button>
                   </>
                 )}
               </div>
