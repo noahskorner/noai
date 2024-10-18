@@ -8,17 +8,18 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { MODELS } from './models';
-import { PullRequest } from 'ollama/browser';
+import { Ollama, PullRequest } from 'ollama/browser';
 import { useEffect, useState } from 'react';
-import { ollama } from './ollama';
 
 export interface ModelSelectProps {
+  ollama: Ollama;
   model: string | null;
   setModel: (model: string) => void;
   setModelLoading: (loading: boolean) => void;
 }
 
 export const ModelSelect = ({
+  ollama,
   model: currentModel,
   setModel,
   setModelLoading,
@@ -71,7 +72,7 @@ export const ModelSelect = ({
     };
 
     loadModels();
-  }, []);
+  }, [ollama]);
 
   return (
     <>

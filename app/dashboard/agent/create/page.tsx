@@ -4,11 +4,11 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import React, { useRef, useState } from 'react';
-import { ChatRequest, ChatResponse, Message } from 'ollama/browser';
+import { ChatRequest, ChatResponse, Message, Ollama } from 'ollama/browser';
 import type { A as AbortableAsyncIterator } from 'ollama/dist/shared/ollama.51f6cea9';
 import { ModelSelect } from './model-select';
 import { MODELS } from './models';
-import { ollama } from './ollama';
+import { Input } from '../../../../components/ui/input';
 
 const SYSTEM_PROMPT_PLACEHOLDER = `You are a helpful assistant knowledgeable about technology and programming. Your goal is to provide clear, concise, and accurate answers to users' questions while encouraging a positive and engaging interaction. Always ask follow-up questions to ensure the user's needs are met.`;
 const USER_PROMPT_PLACEHOLDER = `Can you explain the difference between a framework and a library in software development?`;
@@ -28,6 +28,7 @@ export default function CreateAgentPage() {
   });
   const [loading, setLoading] = useState(false);
   const streamRef = useRef<AbortableAsyncIterator<ChatResponse> | null>(null);
+  const ollamaRef = useRef(new Ollama());
 
   const onSystemPromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessages((prev) => {
@@ -91,7 +92,7 @@ export default function CreateAgentPage() {
       });
 
       // Send the request to ollama
-      streamRef.current = await ollama.chat({
+      streamRef.current = await ollamaRef.current.chat({
         model: model,
         stream: true,
         messages: request,
@@ -159,6 +160,12 @@ export default function CreateAgentPage() {
     }
   };
 
+  const onHostChange = (e: React.FocusEvent<HTMLInputElement>) => {
+    ollamaRef.current = new Ollama({
+      host: e.target.value,
+    });
+  };
+
   return (
     <form
       onSubmit={onMessageSubmit}
@@ -166,7 +173,13 @@ export default function CreateAgentPage() {
     >
       {/* Filters */}
       <div className="flex justify-end gap-4">
+        <Input
+          placeholder="http://localhost:11434"
+          onBlur={onHostChange}
+          className="w-[20rem]"
+        />
         <ModelSelect
+          ollama={ollamaRef.current}
           model={model}
           setModel={setModel}
           setModelLoading={setModelLoading}
