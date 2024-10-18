@@ -9,8 +9,7 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: 'Project name',
-  description: 'Project description',
+  title: 'noai',
 };
 
 export default function RootLayout({
