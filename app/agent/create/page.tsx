@@ -8,7 +8,7 @@ import { ChatRequest, ChatResponse, Message, Ollama } from 'ollama/browser';
 import type { A as AbortableAsyncIterator } from 'ollama/dist/shared/ollama.51f6cea9';
 import { ModelSelect } from './model-select';
 import { MODELS } from './models';
-import { Input } from '../../../../components/ui/input';
+import { Input } from '@/components/ui/input';
 
 const SYSTEM_PROMPT_PLACEHOLDER = `You are a helpful assistant knowledgeable about technology and programming. Your goal is to provide clear, concise, and accurate answers to users' questions while encouraging a positive and engaging interaction. Always ask follow-up questions to ensure the user's needs are met.`;
 const USER_PROMPT_PLACEHOLDER = `Can you explain the difference between a framework and a library in software development?`;

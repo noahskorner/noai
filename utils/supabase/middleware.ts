@@ -1,6 +1,6 @@
-import { createServerClient } from "@supabase/ssr";
-import { type NextRequest, NextResponse } from "next/server";
-import { routes } from "../../app/routes";
+import { createServerClient } from '@supabase/ssr';
+import { type NextRequest, NextResponse } from 'next/server';
+import { authorizedRoutes, routes } from '../../app/routes';
 
 export const updateSession = async (request: NextRequest) => {
   // This `try/catch` block is only here for the interactive tutorial.
@@ -33,7 +33,7 @@ export const updateSession = async (request: NextRequest) => {
             );
           },
         },
-      },
+      }
     );
 
     // This will refresh session if expired - required for Server Components
@@ -41,12 +41,14 @@ export const updateSession = async (request: NextRequest) => {
     const user = await supabase.auth.getUser();
 
     // protected routes
-    if (request.nextUrl.pathname.startsWith("/dashboard") && user.error) {
-      return NextResponse.redirect(new URL(routes.signIn, request.url));
+    if (authorizedRoutes.includes(request.nextUrl.pathname) && user.error) {
+      return NextResponse.redirect(new URL(routes.public.signIn, request.url));
     }
 
-    if (request.nextUrl.pathname === "/" && !user.error) {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
+    if (request.nextUrl.pathname === '/' && !user.error) {
+      return NextResponse.redirect(
+        new URL(routes.authorized.settings.general, request.url)
+      );
     }
 
     return response;

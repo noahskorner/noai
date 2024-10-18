@@ -17,7 +17,7 @@ export default function ForgotPassword({
         <h1 className="text-2xl font-medium">Forgot Password</h1>
         <p className="text-sm text-secondary-foreground">
           Already have an account?&nbsp;
-          <Link className="text-primary underline" href={routes.signIn}>
+          <Link className="text-primary underline" href={routes.public.signIn}>
             Sign in
           </Link>
         </p>

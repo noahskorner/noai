@@ -22,7 +22,7 @@ export default function Signup({ searchParams }: { searchParams: Message }) {
         Already have an account?{' '}
         <Link
           className="text-primary font-medium underline"
-          href={routes.signIn}
+          href={routes.public.signIn}
         >
           Sign in
         </Link>
