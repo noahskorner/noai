@@ -16,8 +16,8 @@ Make sure you have the following installed:
 1. **Clone the repository:**
 
    ```sh
-   gh repo clone noahskorner/education.new
-   cd education.new
+   gh repo clone noahskorner/noai
+   cd noai
    ```
 
 2. **Install the dependencies:**
