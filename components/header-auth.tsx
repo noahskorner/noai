@@ -1,15 +1,15 @@
 import { signOutAction } from '@/app/actions';
 import Link from 'next/link';
 import { Button } from './ui/button';
-import { createServerClient } from '@/utils/supabase/server';
 import { ThemeSwitcher } from './theme-switcher';
 import { routes } from '../app/routes';
+import { User } from '@supabase/supabase-js';
 
-export default async function AuthButton() {
-  const {
-    data: { user },
-  } = await createServerClient().auth.getUser();
+export interface HeaderAuthProps {
+  user: User | null;
+}
 
+export default async function HeaderAuth({ user }: HeaderAuthProps) {
   return (
     <div className="flex gap-2">
       {user ? (

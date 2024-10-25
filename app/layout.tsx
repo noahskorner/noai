@@ -1,7 +1,10 @@
-import HeaderAuth from '@/components/header-auth';
 import { GeistSans } from 'geist/font/sans';
 import { ThemeProvider } from 'next-themes';
 import './globals.css';
+import { createServerClient } from '@/utils/supabase/server';
+import { SidebarProvider } from '@/components/ui/sidebar';
+import Sidebar from './sidebar';
+import Navbar from './navbar';
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -17,6 +20,10 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const {
+    data: { user },
+  } = await createServerClient().auth.getUser();
+
   return (
     <html lang="en" className={GeistSans.className} suppressHydrationWarning>
       <meta
@@ -30,16 +37,15 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <main className="flex min-h-screen w-full flex-col items-center">
-            <nav className="flex h-16 w-full justify-center border-b border-b-foreground/10">
-              <div className="flex w-full items-center justify-end p-3 px-5 text-sm">
-                <HeaderAuth />
+          <SidebarProvider>
+            <Sidebar />
+            <main className="flex min-h-screen w-full flex-col items-center">
+              <Navbar user={user} />
+              <div className="flex h-[calc(100vh-4rem)] w-full max-w-5xl flex-col items-stretch gap-20 p-5">
+                {children}
               </div>
-            </nav>
-            <div className="flex h-[calc(100vh-4rem)] w-full max-w-5xl flex-col items-stretch gap-20 p-5">
-              {children}
-            </div>
-          </main>
+            </main>
+          </SidebarProvider>
         </ThemeProvider>
       </body>
     </html>

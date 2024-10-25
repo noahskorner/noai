@@ -7,7 +7,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ChatRequest, ChatResponse, Message, Ollama } from 'ollama/browser';
 import { ModelSelect } from './model-select';
 import { MODELS } from './models';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/components/hooks/use-toast';
 import { createBrowserClient } from '@/utils/supabase/client';
 import type { A as AbortableAsyncIterator } from 'ollama/dist/shared/ollama.51f6cea9';
 

@@ -30,16 +30,6 @@ export default function SettingsLayout({
           >
             General
           </Link>
-          <Link
-            href={routes.authorized.settings.account}
-            className={
-              route === routes.authorized.settings.account
-                ? 'font-semibold text-primary'
-                : ''
-            }
-          >
-            Account
-          </Link>
         </nav>
         {children}
       </div>

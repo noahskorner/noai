@@ -44,13 +44,6 @@ export const updateSession = async (request: NextRequest) => {
     if (authorizedRoutes.includes(request.nextUrl.pathname) && user.error) {
       return NextResponse.redirect(new URL(routes.public.signIn, request.url));
     }
-
-    if (request.nextUrl.pathname === '/' && !user.error) {
-      return NextResponse.redirect(
-        new URL(routes.authorized.settings.general, request.url)
-      );
-    }
-
     return response;
   } catch {
     // If you are here, a Supabase client could not be created!

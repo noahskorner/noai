@@ -9,7 +9,6 @@ export const routes = {
     createAgent: '/agent/create',
     settings: {
       general: '/settings',
-      account: '/settings/account',
     },
   },
 };
