@@ -16,6 +16,7 @@ import {
 export default async function GeneralSettingsPage() {
   const user = await getUser();
 
+  if (user == null) return null;
   return (
     <SettingsLayout route={routes.authorized.settings.general}>
       <div className="grid gap-6">

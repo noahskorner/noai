@@ -1,14 +1,14 @@
-import { signOutAction } from '@/app/actions'
-import Link from 'next/link'
-import { Button } from './ui/button'
-import { createClient } from '@/utils/supabase/server'
-import { ThemeSwitcher } from './theme-switcher'
-import { routes } from '../app/routes'
+import { signOutAction } from '@/app/actions';
+import Link from 'next/link';
+import { Button } from './ui/button';
+import { createServerClient } from '@/utils/supabase/server';
+import { ThemeSwitcher } from './theme-switcher';
+import { routes } from '../app/routes';
 
 export default async function AuthButton() {
   const {
     data: { user },
-  } = await createClient().auth.getUser()
+  } = await createServerClient().auth.getUser();
 
   return (
     <div className="flex gap-2">
@@ -33,5 +33,5 @@ export default async function AuthButton() {
       )}
       <ThemeSwitcher />
     </div>
-  )
+  );
 }

@@ -5,10 +5,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import React, { useEffect, useRef, useState } from 'react';
 import { ChatRequest, ChatResponse, Message, Ollama } from 'ollama/browser';
-import type { A as AbortableAsyncIterator } from 'ollama/dist/shared/ollama.51f6cea9';
 import { ModelSelect } from './model-select';
 import { MODELS } from './models';
-import { createClient } from '@/utils/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { createBrowserClient } from '@/utils/supabase/client';
+import type { A as AbortableAsyncIterator } from 'ollama/dist/shared/ollama.51f6cea9';
 
 const SYSTEM_PROMPT_PLACEHOLDER = `You are a helpful assistant knowledgeable about technology and programming. Your goal is to provide clear, concise, and accurate answers to users' questions while encouraging a positive and engaging interaction. Always ask follow-up questions to ensure the user's needs are met.`;
 const USER_PROMPT_PLACEHOLDER = `Can you explain the difference between a framework and a library in software development?`;
@@ -29,6 +30,7 @@ export default function CreateAgentPage() {
   const [loading, setLoading] = useState(false);
   const streamRef = useRef<AbortableAsyncIterator<ChatResponse> | null>(null);
   const [ollama, setOllama] = useState<Ollama | null>(null);
+  const { toast } = useToast();
 
   const onSystemPromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessages((prev) => {
@@ -76,6 +78,17 @@ export default function CreateAgentPage() {
 
   const onMessageSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (ollama == null) {
+      return toast({
+        title: 'Uh oh!',
+        description: 'Ollama is not initialized. Please refresh the page.',
+        variant: 'destructive',
+      });
+    }
+
+    // Add the message to the chat
+    setMessages((prev) => [...prev, currentMessage]);
 
     setLoading(true);
     try {
@@ -162,11 +175,12 @@ export default function CreateAgentPage() {
 
   useEffect(() => {
     const fetchHost = async () => {
-      const { data: user } = await createClient()
+      const { data: user } = await createBrowserClient()
         .from('user')
         .select('*')
         .single();
 
+      if (user == null) return;
       setOllama(
         new Ollama({
           host: user.host,
@@ -177,22 +191,24 @@ export default function CreateAgentPage() {
     fetchHost();
   }, []);
 
-  return ollama ? (
+  return (
     <form
       onSubmit={onMessageSubmit}
-      className="h-full w-full flex items-stretch flex-col gap-4"
+      className="flex h-full w-full flex-col items-stretch gap-4"
     >
       {/* Filters */}
       <div className="flex justify-end gap-4">
-        <ModelSelect
-          ollama={ollama}
-          model={model}
-          setModel={setModel}
-          setModelLoading={setModelLoading}
-        />
+        {ollama && (
+          <ModelSelect
+            ollama={ollama}
+            model={model}
+            setModel={setModel}
+            setModelLoading={setModelLoading}
+          />
+        )}
       </div>
       {/* Messages */}
-      <div className="flex gap-2 flex-col">
+      <div className="flex flex-col gap-2">
         <Label htmlFor="system" className="text-md">
           System
         </Label>
@@ -203,18 +219,18 @@ export default function CreateAgentPage() {
           onChange={onSystemPromptChange}
         />
       </div>
-      <div className="grow flex overflow-auto flex-col gap-4">
+      <div className="flex grow flex-col gap-4 overflow-auto">
         {messages.slice(1).map((message, index) => {
           return (
-            <div key={index} className="flex gap-2 flex-col">
+            <div key={index} className="flex flex-col gap-2">
               <Label className="text-md capitalize">{message.role}</Label>
-              <div className="flex flex-col gap-4 min-h-[80px] w-full rounded-md border border-input bg-background text-sm">
+              <div className="flex min-h-[80px] w-full flex-col gap-4 rounded-md border border-input bg-background text-sm">
                 <textarea
-                  className="p-3 w-full h-full flex flex-col gap-4 w-full rounded-md bg-background text-sm placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex h-full w-full flex-col gap-4 rounded-md bg-background p-3 text-sm placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                   onChange={onMessageChange(index)}
                   value={message.content}
                 />
-                <div className="w-full flex justify-end p-1">
+                <div className="flex w-full justify-end p-1">
                   <Button
                     onClick={onDeleteMessageClick(index)}
                     variant="ghost"
@@ -242,14 +258,14 @@ export default function CreateAgentPage() {
         })}
       </div>
       {/* Chat */}
-      <div className="grow-0 flex flex-col gap-4 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+      <div className="flex w-full grow-0 flex-col gap-4 rounded-md border border-input bg-background px-3 py-2 text-sm">
         <textarea
           onChange={onCurrentMessageChange}
           value={currentMessage.content}
-          className="w-full h-full flex flex-col gap-4 rounded-md bg-background text-sm placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex h-full w-full flex-col gap-4 rounded-md bg-background text-sm placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
           placeholder={USER_PROMPT_PLACEHOLDER}
         />
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <div>
             <Button
               className="capitalize"
@@ -292,7 +308,5 @@ export default function CreateAgentPage() {
         </div>
       </div>
     </form>
-  ) : (
-    <></>
   );
 }

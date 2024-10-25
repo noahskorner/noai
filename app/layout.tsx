@@ -12,7 +12,7 @@ export const metadata = {
   title: 'noai',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -21,8 +21,8 @@ export default function RootLayout({
     <html lang="en" className={GeistSans.className} suppressHydrationWarning>
       <meta
         httpEquiv="Content-Security-Policy"
-        content="block-all-mixed-content"
-      ></meta>
+        content={`upgrade-insecure-requests`}
+      />
       <body className="bg-background text-foreground">
         <ThemeProvider
           attribute="class"
@@ -30,13 +30,13 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <main className="min-h-screen w-full flex flex-col items-center">
-            <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-              <div className="w-full flex justify-end items-center p-3 px-5 text-sm">
+          <main className="flex min-h-screen w-full flex-col items-center">
+            <nav className="flex h-16 w-full justify-center border-b border-b-foreground/10">
+              <div className="flex w-full items-center justify-end p-3 px-5 text-sm">
                 <HeaderAuth />
               </div>
             </nav>
-            <div className="h-[calc(100vh-4rem)] flex flex-col items-stretch gap-20 max-w-5xl w-full p-5">
+            <div className="flex h-[calc(100vh-4rem)] w-full max-w-5xl flex-col items-stretch gap-20 p-5">
               {children}
             </div>
           </main>

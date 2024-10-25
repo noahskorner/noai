@@ -4,11 +4,15 @@
     "build": "next build",
     "clean": "find . -type d \\( -name 'node_modules' -o -name '.turbo' -o -name 'dist' -o -name 'cdk.out' -o -name '.next' -o -name 'out' \\) -exec rm -rf {} +",
     "dev": "next dev",
-    "docker:compose:up": "npx supabase start && docker compose -f ./.dev/docker-compose.yml up -d",
+    "docker:compose:up": "npx supabase start",
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "start": "next start",
-    "supabase:status": "npx supabase status"
+    "supabase:status": "npx supabase status",
+    "supabase:migration:new": "npx supabase migration new",
+    "supabase:db:reset": "npx supabase db reset",
+    "supabase:db:push": "npx supabase db push --local && npm run supabase:gen:types",
+    "supabase:gen:types": "npx supabase gen types typescript --local > ./supabase/schema.ts"
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "^1.1.1",
@@ -19,6 +23,7 @@
     "@radix-ui/react-select": "^2.1.2",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-switch": "^1.1.1",
+    "@radix-ui/react-toast": "^1.2.2",
     "@supabase/ssr": "latest",
     "@supabase/supabase-js": "latest",
     "autoprefixer": "10.4.17",

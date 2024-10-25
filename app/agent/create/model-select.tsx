@@ -40,6 +40,7 @@ export const ModelSelect = ({
           model: currentModel,
           keep_alive: 0,
           prompt: '',
+          stream: false,
         });
       }
 
