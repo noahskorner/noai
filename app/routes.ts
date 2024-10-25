@@ -7,6 +7,7 @@ export const routes = {
   authorized: {
     resetPassword: '/reset-password',
     createAgent: '/agent/create',
+    chat: '/chat',
     settings: {
       general: '/settings',
     },

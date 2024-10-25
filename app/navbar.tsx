@@ -9,7 +9,7 @@ export interface NavbarProps {
 export default async function Navbar({ user }: NavbarProps) {
   return (
     <nav className="flex h-16 w-full items-center justify-center border-b border-b-foreground/10 p-3">
-      <SidebarTrigger />
+      {user && <SidebarTrigger />}
       <div className="flex w-full items-center justify-end text-sm">
         <HeaderAuth user={user} />
       </div>

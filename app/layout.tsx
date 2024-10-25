@@ -38,7 +38,7 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           <SidebarProvider>
-            <Sidebar />
+            {user && <Sidebar />}
             <main className="flex min-h-screen w-full flex-col items-center">
               <Navbar user={user} />
               <div className="flex h-[calc(100vh-4rem)] w-full max-w-5xl flex-col items-stretch gap-20 p-5">
