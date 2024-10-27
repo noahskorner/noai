@@ -11,6 +11,7 @@ export const routes = {
     settings: {
       general: '/settings',
     },
+    tasks: '/tasks',
   },
 };
 

@@ -32,6 +32,11 @@ export default async function Sidebar() {
                   <Link href={routes.authorized.createAgent}>Create Agent</Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href={routes.authorized.tasks}>Tasks</Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
