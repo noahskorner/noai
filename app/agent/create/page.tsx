@@ -194,7 +194,7 @@ export default function CreateAgentPage() {
   return (
     <form
       onSubmit={onMessageSubmit}
-      className="flex h-full w-full flex-col items-stretch gap-4"
+      className="flex h-full w-full max-w-5xl flex-col items-stretch gap-4"
     >
       {/* Filters */}
       <div className="flex justify-end gap-4">

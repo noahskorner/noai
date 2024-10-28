@@ -11,7 +11,7 @@ export default function SettingsLayout({
   children,
 }: SettingsLayoutProps) {
   return (
-    <main className="flex h-full w-full flex-1 flex-col gap-4 md:gap-8">
+    <main className="flex h-full w-full max-w-5xl flex-1 flex-col gap-4 md:gap-8">
       <div className="mx-auto grid w-full gap-2">
         <h1 className="text-3xl font-semibold">Settings</h1>
       </div>
