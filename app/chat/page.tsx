@@ -2,6 +2,7 @@
 
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useChat } from 'ai/react';
+import { MarkdownRenderer } from '@/components/markdown-renderer';
 
 export default function ChatPage() {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
@@ -18,27 +19,30 @@ export default function ChatPage() {
               >
                 {Array.isArray(message.content)
                   ? null
-                  : message.content && (
-                      <p className="text-sm leading-7 [&:not(:first-child)]:mt-6">
+                  : message.content &&
+                    (message.role === 'user' ? (
+                      <p className="leading-7 [&:not(:first-child)]:mt-6">
                         {message.content}
                       </p>
-                    )}
+                    ) : (
+                      <MarkdownRenderer content={message.content} />
+                    ))}
               </div>
             ))}
           </div>
         </div>
       </ScrollArea>
-      <div className="flex w-full grow-0 items-center justify-center">
+      <div className="flex w-full grow-0 items-center justify-center p-4">
         <form
           onSubmit={handleSubmit}
-          className="h-14 w-full max-w-3xl rounded-3xl bg-sidebar px-8 text-sm shadow-2xl"
+          className="h-14 w-full max-w-3xl rounded-3xl bg-sidebar px-8"
         >
           <input
             value={input}
             onChange={handleInputChange}
             placeholder="Message"
             name="message"
-            className="h-full w-full bg-sidebar placeholder-primary outline-none"
+            className="h-full w-full bg-sidebar placeholder-primary outline-none active:bg-sidebar"
           ></input>
         </form>
       </div>
