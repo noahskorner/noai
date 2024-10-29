@@ -6,13 +6,11 @@ export async function POST(req: Request) {
   const user = await getUser();
   if (user == null) return new Response('Unauthorized', { status: 401 });
 
-  const { messages } = await req.json();
-
   const openai = createOpenAI({
     baseURL: user.host,
     apiKey: 'ollama',
   });
-
+  const { messages } = await req.json();
   const result = await streamText({
     model: openai('llama3.2'),
     messages: convertToCoreMessages(messages),

@@ -37,6 +37,13 @@ export default async function Sidebar() {
                   <Link href={routes.authorized.tasks}>Tasks</Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href={routes.authorized.settings.general}>
+                    Settings
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
