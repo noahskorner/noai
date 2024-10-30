@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   });
   const { messages } = await req.json();
   const result = await streamText({
-    model: openai('llama3.2'),
+    model: openai('gemma2'),
     messages: convertToCoreMessages(messages),
   });
 

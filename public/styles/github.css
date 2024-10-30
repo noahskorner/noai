@@ -12,12 +12,12 @@
 /* Manually add this pre selector */
 pre {
   color: #24292e !important;
-  background: #ffffff !important;
+  background: transparent !important;
 }
 
 .hljs {
   color: #24292e;
-  background: #ffffff;
+  background: transparent;
 }
 
 .hljs-doctag,
