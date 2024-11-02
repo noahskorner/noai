@@ -31,9 +31,9 @@ export default function ChatPage() {
       <div className="flex w-full grow-0 items-center justify-center p-4">
         <form
           onSubmit={handleSubmit}
-          className={`animate-shimmer h-16 w-full max-w-3xl rounded-3xl from-pink-500 via-blue-500 to-blue-400 p-[2px] transition-colors ${focused ? 'bg-gradient-to-r' : ''}`}
+          className={`animate-shimmer h-16 w-full max-w-3xl rounded-full from-pink-500 via-blue-500 to-blue-400 p-[2px] transition-colors ${focused ? 'bg-gradient-to-r' : ''}`}
         >
-          <div className="flex h-full w-full items-center justify-between gap-2 rounded-3xl border bg-accent px-2">
+          <div className="flex h-full w-full items-center justify-between gap-2 rounded-full border bg-accent px-2">
             <input
               value={input}
               onChange={handleInputChange}
@@ -42,7 +42,7 @@ export default function ChatPage() {
               placeholder="Message"
               name="message"
               autoComplete="off" // Disable autocomplete
-              className="h-full w-full rounded-3xl bg-transparent pl-4 leading-7 placeholder-primary outline-none backdrop-blur-lg active:bg-transparent"
+              className="h-full w-full rounded-full bg-transparent pl-4 leading-7 placeholder-primary outline-none backdrop-blur-lg active:bg-transparent"
             ></input>
             <Button className="rounded-full p-3">
               <svg
