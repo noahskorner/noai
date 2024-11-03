@@ -8,8 +8,8 @@ import { ChatRequest, ChatResponse, Message, Ollama } from 'ollama/browser';
 import { ModelSelect } from './model-select';
 import { MODELS } from './models';
 import { useToast } from '@/components/hooks/use-toast';
-import { createBrowserClient } from '@/utils/supabase/client';
 import type { A as AbortableAsyncIterator } from 'ollama/dist/shared/ollama.51f6cea9';
+import { supabase } from '@/utils/supabase/client';
 
 const SYSTEM_PROMPT_PLACEHOLDER = `You are a helpful assistant knowledgeable about technology and programming. Your goal is to provide clear, concise, and accurate answers to users' questions while encouraging a positive and engaging interaction. Always ask follow-up questions to ensure the user's needs are met.`;
 const USER_PROMPT_PLACEHOLDER = `Can you explain the difference between a framework and a library in software development?`;
@@ -175,10 +175,7 @@ export default function CreateAgentPage() {
 
   useEffect(() => {
     const fetchHost = async () => {
-      const { data: user } = await createBrowserClient()
-        .from('user')
-        .select('*')
-        .single();
+      const { data: user } = await supabase.from('user').select('*').single();
 
       if (user == null) return;
       setOllama(

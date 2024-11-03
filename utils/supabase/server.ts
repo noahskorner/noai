@@ -2,7 +2,7 @@ import { Database } from '@/supabase/schema';
 import { createServerClient as supabaseCreateServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
-export const createServerClient = () => {
+const createServerClient = () => {
   const cookieStore = cookies();
 
   return supabaseCreateServerClient<Database>(
@@ -29,3 +29,5 @@ export const createServerClient = () => {
     }
   );
 };
+
+export const supabase = createServerClient();

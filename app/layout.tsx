@@ -1,10 +1,10 @@
 import { GeistSans } from 'geist/font/sans';
 import { ThemeProvider } from 'next-themes';
 import './globals.css';
-import { createServerClient } from '@/utils/supabase/server';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import Sidebar from './sidebar';
 import Navbar from './navbar';
+import { supabase } from '@/utils/supabase/server';
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -22,7 +22,7 @@ export default async function RootLayout({
 }) {
   const {
     data: { user },
-  } = await createServerClient().auth.getUser();
+  } = await supabase.auth.getUser();
 
   return (
     <html lang="en" className={GeistSans.className} suppressHydrationWarning>

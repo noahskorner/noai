@@ -30,6 +30,7 @@
     "@radix-ui/react-tooltip": "^1.1.3",
     "@supabase/ssr": "latest",
     "@supabase/supabase-js": "latest",
+    "@xyflow/react": "^12.3.4",
     "ai": "^3.4.23",
     "autoprefixer": "10.4.17",
     "class-variance-authority": "^0.7.0",

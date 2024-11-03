@@ -1,9 +1,8 @@
 'use server';
 
-import { createServerClient } from '@/utils/supabase/server';
+import { supabase } from '@/utils/supabase/server';
 
 export const updateUserHostAction = async (formData: FormData) => {
-  const supabase = createServerClient();
   const { data } = await supabase.auth.getUser();
 
   if (data == null || data.user == null)
